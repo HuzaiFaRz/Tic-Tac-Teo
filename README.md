@@ -28,5 +28,6 @@ Clean UI. Smart logic. Minimal design.
 
 Clone the repository:
 
-````bash
-git clone https://github.com/HuzaifaRz/Tic-Tac-Teo.git```
+```bash
+git clone https://github.com/HuzaifaRz/Tic-Tac-Teo.git
+```
