@@ -24,15 +24,14 @@ Clean UI. Smart logic. Minimal design.
 
 ---
 
-## 🚀 Getting Started
+## 📦 Installation
+
+Clone the repository:
 
 ```bash
-npm install
-npm run dev
-```
-
----
+git clone https://github.com/HuzaifaRz/Tic-Tac-Teo.git
 
 ## 📜 License
 
 Open-source project available under the MIT License.
+```
