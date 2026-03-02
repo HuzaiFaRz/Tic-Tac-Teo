@@ -30,7 +30,3 @@ Clone the repository:
 
 ````bash
 git clone https://github.com/HuzaifaRz/Tic-Tac-Teo.git```
-
-## 📜 License
-
-Open-source project available under the MIT License.
