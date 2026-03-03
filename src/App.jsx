@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
 import { Fragment } from "react/jsx-runtime";
 
-function Circle({ value, circleClick }) {
+function Circle({ value, circleClick, winnerGlowing }) {
   return (
-    <div className="circle" onClick={circleClick}>
+    <div className={`${winnerGlowing}`} onClick={circleClick}>
       {value}
     </div>
   );
@@ -11,8 +11,10 @@ function Circle({ value, circleClick }) {
 
 export default function App() {
   const [circles, setCircles] = useState(Array(9).fill(null));
-  const [xNext, setXnext] = useState(false);
-  const guideRef = useRef(null);
+  const [xNext, setXnext] = useState(true);
+  const [isOver, setIsOver] = useState(false);
+  let status;
+  let winnerRow = [];
 
   function declareWinner(circles) {
     const winnerConditions = [
@@ -25,7 +27,6 @@ export default function App() {
       [0, 4, 8],
       [2, 4, 6],
     ];
-
     for (let index = 0; index < winnerConditions.length; index++) {
       const [a, b, c] = winnerConditions[index];
       if (
@@ -33,6 +34,7 @@ export default function App() {
         circles[a] === circles[b] &&
         circles[a] === circles[c]
       ) {
+        winnerRow.push(a, b, c);
         return circles[a];
       }
     }
@@ -40,26 +42,33 @@ export default function App() {
   }
 
   const winner = declareWinner(circles);
-  let status;
+
   if (winner) {
     status = `${winner} Win`;
   } else {
-    status = !xNext ? "X Turn" : "O Turn";
+    status = xNext ? "X Turn" : "O Turn";
+  }
+
+  if (isOver) {
+    status = "Game Over";
   }
 
   function circleClickHandler(index) {
     if (circles[index] || winner) {
-      guideRef.current.textContent = `${declareWinner(circles)} Win`;
       return;
     }
     const circlesHistory = circles.slice();
-    if (!xNext) {
+    if (xNext) {
       circlesHistory[index] = "X";
     } else {
       circlesHistory[index] = "O";
     }
     setCircles(circlesHistory);
     setXnext(!xNext);
+    if (circlesHistory.every((e) => e !== null) && !winner) {
+      setIsOver(true);
+      return;
+    }
   }
 
   const firstRow = [0, 1, 2];
@@ -67,13 +76,17 @@ export default function App() {
   const thirdRow = [6, 7, 8];
 
   function againStartHandler() {
+    setIsOver(false);
     setCircles(Array(9).fill(null));
+    setXnext(true);
   }
+
+  let circleClass = "circle Animation";
 
   return (
     <Fragment>
       <main>
-        <div className="board">
+        <div className={`board ${isOver && "Over"}`}>
           <div className="row">
             {firstRow.map((element, index) => {
               return (
@@ -81,6 +94,9 @@ export default function App() {
                   key={index}
                   value={circles[element]}
                   circleClick={() => circleClickHandler([element])}
+                  winnerGlowing={
+                    winnerRow.includes(element) ? circleClass : "circle"
+                  }
                 />
               );
             })}
@@ -92,6 +108,9 @@ export default function App() {
                   key={index}
                   value={circles[element]}
                   circleClick={() => circleClickHandler([element])}
+                  winnerGlowing={
+                    winnerRow.includes(element) ? circleClass : "circle"
+                  }
                 />
               );
             })}
@@ -103,14 +122,17 @@ export default function App() {
                   key={index}
                   value={circles[element]}
                   circleClick={() => circleClickHandler([element])}
+                  winnerGlowing={
+                    winnerRow.includes(element) ? circleClass : "circle"
+                  }
                 />
               );
             })}
           </div>
         </div>
-        <p className="guide" ref={guideRef}>
-          {status}
-          {winner && <button onClick={againStartHandler}>Again Start</button>}
+        <p className="guide">
+          <span>{status}</span>
+          <button onClick={againStartHandler}>Again Start</button>
         </p>
       </main>
     </Fragment>
