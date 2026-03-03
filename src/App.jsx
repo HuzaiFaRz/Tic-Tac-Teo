@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Fragment } from "react/jsx-runtime";
 
 function Circle({ value, circleClick, winnerGlowing }) {
@@ -46,11 +46,11 @@ export default function App() {
   if (winner) {
     status = `${winner} Win`;
   } else {
-    status = xNext ? "X Turn" : "O Turn";
-  }
-
-  if (isOver) {
-    status = "Game Over";
+    if (isOver) {
+      status = "Game Over";
+    } else {
+      status = xNext ? "X Turn" : "O Turn";
+    }
   }
 
   function circleClickHandler(index) {
@@ -58,6 +58,7 @@ export default function App() {
       return;
     }
     const circlesHistory = circles.slice();
+
     if (xNext) {
       circlesHistory[index] = "X";
     } else {
@@ -65,7 +66,7 @@ export default function App() {
     }
     setCircles(circlesHistory);
     setXnext(!xNext);
-    if (circlesHistory.every((e) => e !== null) && !winner) {
+    if (!winner && circlesHistory.every((e) => e !== null)) {
       setIsOver(true);
       return;
     }
@@ -86,7 +87,7 @@ export default function App() {
   return (
     <Fragment>
       <main>
-        <div className={`board ${isOver && "Over"}`}>
+        <div className={`board ${!winner ? isOver && "Over" : null}`}>
           <div className="row">
             {firstRow.map((element, index) => {
               return (
